@@ -10,4 +10,6 @@ public class ProductData {
     private String name;
     private Double price;
     private String category;
+    private int quantity;
+    private String image;
 }

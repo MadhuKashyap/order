@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Products - Order System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        h1 {
+            color: #333;
+            margin: 0;
+        }
+        .logout-button {
+            background-color: #dc3545;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .logout-button:hover {
+            background-color: #c82333;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .product-description {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        .product-price {
+            font-size: 1.1rem;
+            color: #2c5282;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .product-stock {
+            color: #48bb78;
+            font-size: 0.9rem;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        .error-message {
+            color: #dc3545;
+            text-align: center;
+            padding: 1rem;
+            background-color: #f8d7da;
+            border-radius: 4px;
+            margin: 1rem 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Products</h1>
+            <a href="/order/ui" class="logout-button">Logout</a>
+        </div>
+        <div id="error-message" class="error-message"></div>
+        <div id="products-container">
+            <div class="loading">Loading products...</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchProducts();
+        });
+
+        function fetchProducts() {
+            fetch('/order/get-products')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(products => {
+                    displayProducts(products);
+                })
+                .catch(error => {
+                    console.error('Error fetching products:', error);
+                    showError('Failed to load products. Please try again later.');
+                });
+        }
+
+        function displayProducts(products) {
+            const container = document.getElementById('products-container');
+            if (products.length === 0) {
+                container.innerHTML = '<div class="loading">No products available</div>';
+                return;
+            }
+
+            const productsGrid = document.createElement('div');
+            productsGrid.className = 'products-grid';
+
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-description">${product.description}</div>
+                    <div class="product-price">$${product.price.toFixed(2)}</div>
+                    <div class="product-stock">In Stock: ${product.stock}</div>
+                `;
+                productsGrid.appendChild(productCard);
+            });
+
+            container.innerHTML = '';
+            container.appendChild(productsGrid);
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html> 

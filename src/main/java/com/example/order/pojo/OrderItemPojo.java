@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "orderItem")
+@Table(name = "order_item_details")
 public class OrderItemPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

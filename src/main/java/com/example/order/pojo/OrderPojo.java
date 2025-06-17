@@ -11,7 +11,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name = "orders")
+@Table(name = "order_details")
 public class OrderPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

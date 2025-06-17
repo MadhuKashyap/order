@@ -1,23 +1,16 @@
-package com.example.order.pojo;
+package com.example.order.model.form;
 
 import com.example.order.model.enums.ROLE;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "user")
-public class UserPojo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class UserForm {
     private String name;
     private Long mobileNumber;
     private String emailId;
     private String password;
     private String userId;
-    @Enumerated(EnumType.STRING)
     private ROLE userRole;
-}
+} 

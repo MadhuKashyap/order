@@ -18,7 +18,6 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,27 +38,24 @@ public class OrderDto {
         if(!checkIfOrderCanBeFulfilled(orderForm.getItemList())) {
            throw new Exception("Order can not be fulfilled because some items are out of stock");
         }
-        Optional<OrderPojo> pojo = orderDao.findById(orderForm.getOrderId());
-        if(pojo.isEmpty()) {
-            OrderPojo order = new OrderPojo();
-            order.setUserId(orderForm.getUserId());
-            order.setCreatedAt(new Date());
-            order.setPaymentMethod(PaymentMethod.COD);
-            order.setStatus(OrderStatus.CREATED);
-            order.setTotalAmount(orderForm.getTotalAmount());
+        OrderPojo order = new OrderPojo();
+        order.setUserId(orderForm.getUserId());
+        order.setCreatedAt(new Date());
+        order.setPaymentMethod(PaymentMethod.COD);
+        order.setStatus(OrderStatus.CREATED);
+        order.setTotalAmount(orderForm.getTotalAmount());
 //            order.setCustomerAddress(orderForm.getCustomerAddress());
-            orderDao.save(order);
+        orderDao.save(order);
 
-            for(OrderItemForm item : orderForm.getItemList()) {
-                OrderItemPojo orderItem = new OrderItemPojo();
-                orderItem.setSkuId(item.getSkuId());
-                orderItem.setQty(item.getQty());
-                orderItem.setSellingPrice(item.getSellingPrice());
-                orderItem.setDiscount(item.getDiscount());
-                orderItem.setTotalPrice(item.getTotalPrice());
-                orderItem.setOrderId(order.getOrderId());
-                orderItemDao.save(orderItem);
-            }
+        for(OrderItemForm item : orderForm.getItemList()) {
+            OrderItemPojo orderItem = new OrderItemPojo();
+            orderItem.setSkuId(item.getSkuId());
+            orderItem.setQty(item.getQty());
+            orderItem.setSellingPrice(item.getSellingPrice());
+            orderItem.setDiscount(item.getDiscount());
+            orderItem.setTotalPrice(item.getTotalPrice());
+            orderItem.setOrderId(order.getOrderId());
+            orderItemDao.save(orderItem);
         }
         //TODO send inventory update event to topic
     }

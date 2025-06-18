@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface UserDao extends JpaRepository<UserPojo, Long> {
     Optional<UserPojo> findByEmailId(String emailId);
     Optional<UserPojo> findByUserId(String userId);
+
 } 

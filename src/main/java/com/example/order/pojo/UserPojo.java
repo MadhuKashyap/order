@@ -15,8 +15,10 @@ public class UserPojo {
     private Long id;
     private String name;
     private Long mobileNumber;
+    @Column(unique = true)
     private String emailId;
     private String password;
+    @Column(unique = true)
     private String userId;
     @Enumerated(EnumType.STRING)
     private ROLE userRole;

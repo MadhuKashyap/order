@@ -50,9 +50,18 @@
             padding: 1.5rem;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
         }
         .product-card:hover {
             transform: translateY(-5px);
+        }
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 1rem;
         }
         .product-name {
             font-size: 1.2rem;
@@ -74,6 +83,84 @@
             color: #48bb78;
             font-size: 0.9rem;
         }
+        .add-to-cart-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+        .add-to-cart-btn:hover {
+            background-color: #45a049;
+        }
+        .cart-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+        }
+        .cart-items {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            min-width: 250px;
+            margin-top: 10px;
+        }
+        .cart-items.show {
+            display: block;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            margin-right: 10px;
+            border-radius: 4px;
+        }
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        .cart-item-price {
+            color: #2c5282;
+            font-weight: bold;
+        }
+        .cart-total {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid #eee;
+            font-weight: bold;
+        }
         .loading {
             text-align: center;
             padding: 2rem;
@@ -94,6 +181,15 @@
     <div class="container">
         <div class="header">
             <h1>Products</h1>
+            <div class="cart-container">
+                <div class="cart-icon">
+                    🛒 <span class="cart-count">0</span>
+                </div>
+                <div class="cart-items" id="cart-items">
+                    <div id="cart-items-list"></div>
+                    <div class="cart-total">Total: Rs <span id="cart-total">0.00</span></div>
+                </div>
+            </div>
             <a href="/order/ui" class="logout-button">Logout</a>
         </div>
         <div id="error-message" class="error-message"></div>
@@ -101,60 +197,6 @@
             <div class="loading">Loading products...</div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            fetchProducts();
-        });
-
-        function fetchProducts() {
-            fetch('/order/get-products')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(products => {
-                    displayProducts(products);
-                })
-                .catch(error => {
-                    console.error('Error fetching products:', error);
-                    showError('Failed to load products. Please try again later.');
-                });
-        }
-
-        function displayProducts(products) {
-            const container = document.getElementById('products-container');
-            if (products.length === 0) {
-                container.innerHTML = '<div class="loading">No products available</div>';
-                return;
-            }
-
-            const productsGrid = document.createElement('div');
-            productsGrid.className = 'products-grid';
-
-            products.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
-                productCard.innerHTML = `
-                    <div class="product-name">${product.name}</div>
-                    <div class="product-description">${product.description}</div>
-                    <div class="product-price">$${product.price.toFixed(2)}</div>
-                    <div class="product-stock">In Stock: ${product.stock}</div>
-                `;
-                productsGrid.appendChild(productCard);
-            });
-
-            container.innerHTML = '';
-            container.appendChild(productsGrid);
-        }
-
-        function showError(message) {
-            const errorDiv = document.getElementById('error-message');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-        }
-    </script>
+    <script th:src="@{/js/products.js}"></script>
 </body>
 </html> 
